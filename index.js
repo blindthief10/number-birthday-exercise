@@ -17,7 +17,7 @@ const calculateMissingDigits = (finalNumber, finalDate) => {
   const finalDateArray = finalDate.split('');
   finalNumberArray.forEach((number, index, array) => {
     const indexFound = finalDateArray.findIndex(value => value === number);
-    indexFound === -1 ? differentDigits += 1 : finalDateArray.splice(indexFound, 0);
+    indexFound === -1 ? differentDigits += 1 : finalDateArray.splice(indexFound, 1);
   })
   return differentDigits;
 }
@@ -25,13 +25,28 @@ const calculateMissingDigits = (finalNumber, finalDate) => {
 const calculateMobileNumberCost = (mobileNumber, dateOfBirth) => {
   let initialPrice = 39;
   const finalMobileNumber = numberPrefixed(mobileNumber);
-  finalMobileNumber.length !== 8 ? console.log('The mobile number must be at least 8 characters long') : null
+
+  if (finalMobileNumber.length !== 8) {
+    return 'The mobile number must be at least 8 characters long';
+  }
+
   const birthDateString = assembleDateString(dateOfBirth);
-  finalMobileNumber.split('').sort().join('') === birthDateString.split('').sort().join('') ? initialPrice += 100 : null
-  finalMobileNumber === birthDateString ? initialPrice += 100 : null
   const missingDigits = calculateMissingDigits(finalMobileNumber, birthDateString);
-  missingDigits < 5 && missingDigits > 1 ? initialPrice += 50 : null
-  return initialPrice;
+
+  if (finalMobileNumber === birthDateString) {
+    initialPrice += 200;
+    return initialPrice;
+  }
+
+  if (!missingDigits) {
+    initialPrice += 100;
+    return initialPrice;
+  }
+
+  if (missingDigits < 5 && missingDigits > 1) {
+    initialPrice += 50;
+    return initialPrice;
+  }
 }
 
-console.log(calculateMobileNumberCost(28067938, new Date(1988, 2, 24)));
+console.log(calculateMobileNumberCost(23031988, new Date(1988, 2, 24)));
